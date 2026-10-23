@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-ccg-parsing"
+version = "0.1.0"
+description = "CCG parsing with LLMs: LoRA fine-tuning with direct, two-step, and step-by-step (LexTD, LexBU, SymTD, SymBU) outputs."
+requires-python = ">=3.10"
+# Versions pinned to the environment used for the paper experiments.
+# The tokenization behaviour of finetune.Dataset depends on the transformers version.
+# flash-attn==2.8.3 is also required, but must be installed separately after torch:
+#   pip install flash-attn==2.8.3 --no-build-isolation
+dependencies = [
+    "torch==2.9.0",
+    "transformers==4.57.3",
+    "tokenizers==0.22.1",
+    "huggingface-hub==0.36.0",
+    "safetensors==0.7.0",
+    "jinja2==3.1.6",
+    "peft==0.18.0",
+    "accelerate==1.12.0",
+    "numpy==2.2.6",
+    "pyyaml==6.0.3",
+]
+
+[project.optional-dependencies]
+# Required by predict.py (vLLM inference; xgrammar/llguidance are the constrained-decoding backends).
+inference = [
+    "vllm==0.12.0",
+    "xgrammar==0.1.27",
+    "llguidance==1.3.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+llm_ccg_parsing = ["system_prompts.yaml"]

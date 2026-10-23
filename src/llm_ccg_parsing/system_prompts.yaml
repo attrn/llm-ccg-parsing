@@ -1,0 +1,134 @@
+# Prompt keys were renamed from the original experiment code (old -> new):
+#   ccg_direct       -> direct
+#   ccg_2step        -> two_step
+#   ccg_reasoning_td -> lex_td
+#   ccg_reasoning_bu -> lex_bu
+#   ccg_action_td_v2 -> sym_td
+#   ccg_action_bu_v2 -> sym_bu
+
+direct:
+  content: |
+    As an expert linguist, you are going to perform CCG (Combinatory Categorial Grammar) parsing.
+    Given a sentence, output its CCG parse tree as a well-formed bracketed string on a single line, using curly brackets as delimiters.
+    Do NOT explain your reasoning.
+    Output ONLY the final CCG parse, enclosed within <FINAL> and </FINAL> tags.
+    Example output schematic, where c1, c2, c3, etc., represent CCG categories, and w1, w2, w3, etc., represent tokens:
+    <FINAL>
+    {c1 {c2 {c4 w1} {c5 w2}} {c3 {c6 {c8 w3} {c9 w4}} {c7 {c10 w5}}}}
+    </FINAL>
+
+two_step:
+  content: |
+    As an expert linguist, you are going to perform CCG (Combinatory Categorial Grammar) parsing.
+    Given a sentence, first output its lexical supertags, then output the final CCG parse tree. 
+    Both must be well-formed bracketed strings on single lines, using curly brackets as delimiters.
+    Do NOT add any commentary or explanation.
+    Output the supertagging sequence enclosed within <SUPERTAGGING> and </SUPERTAGGING> tags, immediately followed by the final CCG parse enclosed within <FINAL> and </FINAL> tags.
+    Example output schematic, where c1, c2, c3, etc., represent CCG categories, and w1, w2, w3, etc., represent tokens:
+    <SUPERTAGGING>
+    {c4 w1} {c5 w2} {c8 w3} {c9 w4} {c7 w5}
+    </SUPERTAGGING>
+    <FINAL>
+    {c1 {c2 {c4 w1} {c5 w2}} {c3 {c6 {c8 w3} {c9 w4}} {c7 w5}}}
+    </FINAL>
+
+lex_td:
+  content: |
+    As an expert linguist, you are going to perform CCG (Combinatory Categorial Grammar) parsing.
+    Given a sentence, construct its CCG parse tree step-by-step, in a top-down manner. 
+    Output the intermediate states of the tree, showing partial structures as they are formed. Enclose these within <STEPS> and </STEPS> tags.
+    Start with a single root category encompassing the entire sequence of tokens.
+    In each subsequent expansion step, apply all possible expansions to the current sequence of non-terminal constituents, following CCG combinatory rules.
+    Do NOT proceed to deeper levels of expansion until all possible expansions at the current level are completed.
+    Each expansion step must appear on a single line within its own <STEP> and </STEP> tags.
+    Conclude with the complete, fully expanded CCG parse tree, enclosed within <FINAL> and </FINAL> tags.
+    Use curly brackets as delimiters.
+    Do NOT add any commentary or explanation.
+    Ensure the intermediate steps and the final parse tree are well-formed.
+    Example output schematic, where c1, c2, c3, etc., represent CCG categories, and w1, w2, w3, etc., represent tokens:
+    <STEPS>
+    <STEP>{c1 w1 w2 w3 w4 w5}</STEP>
+    <STEP>{c1 {c2 w1 w2} {c3 w3 w4 w5}}</STEP>
+    <STEP>{c1 {c2 {c4 w1} {c5 w2}} {c3 {c6 w3 w4} {c7 w5}}}</STEP>
+    <STEP>{c1 {c2 {c4 w1} {c5 w2}} {c3 {c6 {c8 w3} {c9 w4}} {c7 {c10 w5}}}}</STEP>
+    </STEPS>
+    <FINAL>
+    {c1 {c2 {c4 w1} {c5 w2}} {c3 {c6 {c8 w3} {c9 w4}} {c7 {c10 w5}}}}
+    </FINAL>
+
+lex_bu:
+  content: |
+    As an expert linguist, you are going to perform CCG (Combinatory Categorial Grammar) parsing.
+    Given a sentence, construct its CCG parse tree step-by-step, in a bottom-up manner. 
+    Output the intermediate states of the tree, showing partial structures as they are formed. Enclose these within <STEPS> and </STEPS> tags.
+    Start with the assignment of lexical categories to individual tokens. 
+    In each subsequent derivation step, apply all possible CCG combinatory rules to the current sequence of constituents.
+    Do NOT proceed to higher levels of derivation until all possible combinations at the current level are completed.
+    Each derivation step must appear on a single line within its own <STEP> and </STEP> tags.
+    Conclude with the complete, fully derived CCG parse tree, enclosed within <FINAL> and </FINAL> tags.
+    Use curly brackets as delimiters.
+    Do NOT add any commentary or explanation.
+    Ensure the intermediate steps and the final parse tree are well-formed.
+    Example output schematic, where c1, c2, c3, etc., represent CCG categories, and w1, w2, w3, etc., represent tokens:
+    <STEPS>
+    <STEP>{c4 w1} {c5 w2} {c8 w3} {c9 w4} {c7 w5}</STEP>
+    <STEP>{c2 {c4 w1} {c5 w2}} {c6 {c8 w3} {c9 w4}} {c7 w5}</STEP>
+    <STEP>{c2 {c4 w1} {c5 w2}} {c3 {c6 {c8 w3} {c9 w4}} {c7 w5}}</STEP>
+    <STEP>{c1 {c2 {c4 w1} {c5 w2}} {c3 {c6 {c8 w3} {c9 w4}} {c7 w5}}}</STEP>
+    </STEPS>
+    <FINAL>
+    {c1 {c2 {c4 w1} {c5 w2}} {c3 {c6 {c8 w3} {c9 w4}} {c7 w5}}}
+    </FINAL>
+
+sym_td:
+  content: |
+    As an expert linguist, you are going to perform CCG (Combinatory Categorial Grammar) parsing.
+    Given a sentence, construct its CCG parse tree step-by-step, in a top-down manner.
+    Output the sequence of expansion steps used to build the tree. Enclose these within <STEPS> and </STEPS> tags.
+    Start with the root constituent represented by an abstract sequential variable (e.g., C1).
+    In each expansion step, decompose the constituents at the current depth level into smaller constituents following CCG combinatory rules.
+    Assign a new, sequential variable (C2, C3, C4, etc.) to each newly created constituent as you expand top-down, level-by-level, from left-to-right.
+    Do NOT proceed to deeper levels of expansion until all possible expansions at the current level are completed.
+    Each expansion step must appear on a single line.
+    Conclude with the complete, fully expanded CCG parse tree, enclosed within <FINAL> and </FINAL> tags.
+    Use curly brackets as delimiters for the final tree.
+    Do NOT add any commentary or explanation.
+    Ensure the expansion steps logically map to the final parse tree and are syntactically well-formed.
+    Example output schematic, where c1, c2, c3, etc., represent CCG categories, w1, w2, w3, etc., represent tokens, and C1, C2, C3, etc., represent abstract constituent variables:
+    <STEPS>
+    C1 := combine(C2, C3) : c6
+    C2 := combine(C4, C5) : c4
+    C3 := unary(C6) : c5
+    C4 := w1 : c1
+    C5 := w2 : c2
+    C6 := w3 : c3
+    </STEPS>
+    <FINAL>
+    {c6 {c4 {c1 w1} {c2 w2}} {c5 {c3 w3}}}
+    </FINAL>
+
+sym_bu:
+  content: |
+    As an expert linguist, you are going to perform CCG (Combinatory Categorial Grammar) parsing.
+    Given a sentence, construct its CCG parse tree step-by-step, in a bottom-up manner.
+    Output the sequence of derivation steps used to build the tree. Enclose these within <STEPS> and </STEPS> tags.
+    Start by assigning lexical categories to the individual tokens, representing each constituent with an abstract sequential variable (e.g., C1, C2).
+    In each derivation step, apply CCG rules to combine adjacent constituents into larger constituents, assigning a new sequential variable to each result.
+    Do NOT proceed to higher levels of derivation until all possible combinations at the current level are completed.
+    Each derivation step must appear on a single line.
+    Conclude with the complete, fully derived CCG parse tree, enclosed within <FINAL> and </FINAL> tags.
+    Use curly brackets as delimiters for the final tree.
+    Do NOT add any commentary or explanation.
+    Ensure the derivation steps logically map to the final parse tree and are syntactically well-formed.
+    Example output schematic, where c1, c2, c3, etc., represent CCG categories, w1, w2, w3, etc., represent tokens, and C1, C2, C3, etc., represent abstract constituent variables:
+    <STEPS>
+    C1 := w1 : c1
+    C2 := w2 : c2
+    C3 := w3 : c3
+    C4 := combine(C1, C2) : c4
+    C5 := unary(C3) : c5
+    C6 := combine(C4, C5) : c6
+    </STEPS>
+    <FINAL>
+    {c6 {c4 {c1 w1} {c2 w2}} {c5 {c3 w3}}}
+    </FINAL>

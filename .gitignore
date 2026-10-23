@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+outputs*/
+predictions*/
+data/
+checkpoint-*/
+*.safetensors
+*.bin
+*.log
+*.egg-info/
+build/
+.idea/
